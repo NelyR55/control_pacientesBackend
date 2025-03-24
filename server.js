@@ -10,10 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
-
 app.use('/api/patients', patientRoutes);
 app.use('/api/auth', authRoutes); // NUEVA RUTA DE AUTENTICACIÓN
 
