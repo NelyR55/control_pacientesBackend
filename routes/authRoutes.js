@@ -6,7 +6,7 @@ const User = require('../models/User');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  const { email, password, role } = req.body; // Agregar el rol
+  const { email, password, role } = req.body; // AGREGAR EL ROL 
   
   const hashedPassword = await bcrypt.hash(password, 10);
   

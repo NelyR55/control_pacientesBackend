@@ -218,8 +218,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
-//ACTUALIZAR
-// Actualizar paciente (incluyendo dispositivos invasivos)
+//ACTUALIZAR PACIENTE (incluyendo dispositivos invasivos)
 router.put("/:id", (req, res) => {
   const { id } = req.params;
   console.log("\n--- INICIO DE ACTUALIZACIÓN ---");
@@ -234,7 +233,7 @@ router.put("/:id", (req, res) => {
       return res.status(400).json({ error: "No se enviaron datos para actualizar" });
     }
 
-    // Procesar booleanos
+//PROCESAR BOOLEANOS
     if (updates.ingresa_con_upp !== undefined) {
       updates.ingresa_con_upp = updates.ingresa_con_upp ? "Sí" : "No";
     }
@@ -245,7 +244,7 @@ router.put("/:id", (req, res) => {
       updates.presenta_upp = updates.presenta_upp ? "Sí" : "No";
     }
 
-    // Procesar dispositivos invasivos
+//PROCESAR DISPOSITIVOS INVASIVOS 
     if (updates.dispositivos_invasivos) {
       console.log("Dispositivos invasivos original:", updates.dispositivos_invasivos);
       let dispositivosFinales = [...updates.dispositivos_invasivos];
@@ -260,7 +259,7 @@ router.put("/:id", (req, res) => {
       updates.fecha_egreso = null;
     }
 
-    // Construir la consulta
+//CONSTRUIR LA CONSULTA PARA LA ACTUALIZACIÓN DE PACIENTES
     const updateFields = Object.keys(updates)
       .filter(key => updates[key] !== undefined)
       .map(key => `${key} = ?`);
