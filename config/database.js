@@ -1,14 +1,25 @@
-const mysql = require('mysql2');
-require('dotenv').config(); // Cargar las variables de entorno
+const mysql = require('mysql2/promise');
+require('dotenv').config();  // Carga variables de entorno desde .env
 
-const connection = mysql.createConnection(process.env.DATABASE_URL);
-
-connection.connect(err => {
-  if (err) {
-    console.error('Database connection failed:', err.stack);
-    return;
-  }
-  console.log('Connected to MySQL database in Railway 🚀');
+const pool = mysql.createPool({
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-module.exports = connection;
+(async () => {
+    try {
+        const connection = await pool.getConnection();
+        console.log("✅ Conectado a MySQL en Railway");
+        connection.release();  // Liberar la conexión
+    } catch (err) {
+        console.error("❌ Error conectando a MySQL:", err);
+    }
+})();
+
+module.exports = pool;

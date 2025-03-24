@@ -15,21 +15,39 @@ router.post('/register', async (req, res) => {
   });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  
-  User.findByEmail(email, async (err, results) => {
-    if (err) return res.status(500).send(err);
-    
-    if (results.length === 0) return res.status(400).json({ message: 'Usuario no encontrado' });
 
-    const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-    
-    if (!isMatch) return res.status(400).json({ message: 'Contraseña incorrecta' });
+  try {
+    User.findByEmail(email, async (err, results) => {
+      if (err) {
+        console.error("❌ Error en la base de datos:", err);
+        return res.status(500).json({ message: 'Error interno del servidor' });
+      }
 
-    res.json({ message: 'Login exitoso', role: user.role });
-  });
+      console.log("Resultados de búsqueda:", results);
+
+      if (!results || results.length === 0) {
+        return res.status(400).json({ message: 'Usuario no encontrado' });
+      }
+
+      const user = results[0];
+      console.log("Usuario encontrado:", user);
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        console.log("❌ Contraseña incorrecta");
+        return res.status(400).json({ message: 'Contraseña incorrecta' });
+      }
+
+      console.log("✅ Login exitoso para:", user.email);
+      res.json({ message: 'Login exitoso', role: user.role });
+    });
+  } catch (error) {
+    console.error("❌ Error en el login:", error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
 });
 
 module.exports = router;
